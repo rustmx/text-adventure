@@ -1,15 +1,18 @@
 use house::House;
 
-pub struct Detective<'a, 'b> {
-    pub name: &'a str,
+#[derive(Deserialize)]
+pub struct Detective {
+    pub name: String,
     pub current_room: i32,
-    pub house: &'b House<'b>
+    pub house: House
 }
 
-impl<'a, 'b> Detective<'a, 'b> {
+impl Detective {
     pub fn change_room(&mut self, room_id: i32) -> Result<&mut Self, &str> {
 
-        match self.house.get(&self.current_room) {
+        let house_copy = self.house.clone();
+
+        match house_copy.get(&self.current_room) {
             Some(current_room) => {
                 match current_room.transitions.iter().position(|x| x == &room_id) {
                     Some(_) => {
